@@ -16,9 +16,6 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
     network_acl_bypass_for_azure_services = var.network_acl_bypass_for_azure_services
     network_acl_bypass_ids = var.network_acl_bypass_ids
     local_authentication_disabled = var.local_authentication_disabled
-    consistency_level = var.consistency_level
-    max_interval_in_seconds = var.max_interval_in_seconds
-    max_staleness_prefix = var.max_staleness_prefix
     create_mode = var.create_mode
     default_identity_type = var.default_identity_type
     kind = var.kind
@@ -43,7 +40,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
             name = capabilities.value.name
     }
     }
-   dynamic "cores_rule" {
+   dynamic "cors_rule" {
     for_each = var.cors_rule != null ? var.cors_rule : []
     content {
         allowed_headers = cors_rule.value.allowed_headers
@@ -54,8 +51,8 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
     }
    } 
 
-    dynamic "identity" {
-        for_each = var.identity != null ? var.identity : []
+     dynamic "identity" {
+        for_each = var.identity != null ? [] : [1]
         content {
             type = identity.value.type
             identity_ids = identity.value.identity_ids
@@ -63,7 +60,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
     }
 
     dynamic "restore" {
-        for_each = var.restore != null ? var.restore : []
+        for_each = var.restore != null ? [] : [1]
         content {
             source_cosmosdb_account_id = restore.value.source_cosmosdb_account_id
             restore_timestamp_in_utc = restore.value.restore_timestamp_in_utc
@@ -78,14 +75,14 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
     }
 
     dynamic "capacity" {
-        for_each = var.capacity != null ? var.capacity : []
+        for_each = var.capacity != null ? [] : [1]
         content {
             total_throughput_limit = capacity.value.total_throughput_limit
         }
     }
 
     dynamic "backup" {
-        for_each = var.backup != null ? var.backup : []
+        for_each = var.backup != null ? [] : [1]
         content {
             type = backup.value.type
             interval_in_minutes = backup.value.interval_in_minutes
@@ -95,7 +92,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb-account" {
     }
 
     dynamic "analytical_storage" {
-        for_each = var.analytical_storage != null ? var.analytical_storage : []
+        for_each = var.analytical_storage != null ? [] : [1]
         content {
             schema_type = analytical_storage.value.schema_type
         }

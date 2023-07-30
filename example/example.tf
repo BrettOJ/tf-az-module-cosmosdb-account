@@ -1,3 +1,21 @@
+locals {
+
+  naming_convention_info = {
+    name         = "001"
+    project_code = "ml"
+    env          = "de"
+    zone         = "in"
+    agency_code  = "mrl"
+    tier         = "pp"
+  }
+
+  tags = {
+    createdBy = "Terraform"
+    project   = "bojtest"
+    Owner     = "boj"
+  }
+}
+
 module "cosmosdb-account" {
     source = "../" #git::https://github.com/BrettOJ/tf-az-module-cosmosdb-account?ref=main"
     resource_group_name = var.resource_group_name
@@ -16,15 +34,11 @@ module "cosmosdb-account" {
     network_acl_bypass_for_azure_services = var.network_acl_bypass_for_azure_services
     network_acl_bypass_ids = var.network_acl_bypass_ids
     local_authentication_disabled = var.local_authentication_disabled
-    consistency_level = var.consistency_level
-    max_interval_in_seconds = var.max_interval_in_seconds
-    max_staleness_prefix = var.max_staleness_prefix
     create_mode = var.create_mode
     default_identity_type = var.default_identity_type
     kind = var.kind
-    tags = {
-        environment = "dev"
-    }
+    tags = local.tags
+    naming_convention_info = local.naming_convention_info
 
     consistency_policy = {
         consistency_level = "Session"
@@ -49,33 +63,33 @@ module "cosmosdb-account" {
         exposed_headers = ["*"]
         max_age_in_seconds = 3600
     }]
-    identity = [{
+    identity = {
         type = "SystemAssigned"
         identity_ids = []
-    }]
-    restore = [{
+    }
+    restore = {
         source_cosmosdb_account_id = ""
         restore_timestamp_in_utc = ""
         database = [{
             name = ""
             collection_names = []
         }]
-    }]
+    }
 
-    capacity = [{
+    capacity = {
         total_throughput_limit = 400
-    }]
+    }
 
-    backup = [{
+    backup = {
         type = "Periodic"
         interval_in_minutes = 240
         retention_in_hours = 8
         storage_redundancy = "Local"
-    }]
+    }
 
-    analytical_storage = [{
+    analytical_storage = {
         schema_type = "FullFidelity"
-    }]
+    }
 
     virtual_network_rule = [{
         id = ""

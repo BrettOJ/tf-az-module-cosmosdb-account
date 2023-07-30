@@ -1,9 +1,4 @@
 # Terraform Varialbes for CosmosDB
-variable "name" {
-    type = string
-    description = "required name of cosmosdb account"
-}
-
 variable "resource_group_name" {
     type = string
     description = "required name of resource group"
@@ -19,10 +14,6 @@ variable "offer_type" {
     description = "required offer type of cosmosdb account"
 }
 
-variable "tags" {
-    type = string
-    description = "(optional) describe your variable"
-}
 
 variable "create_mode" {
     type = string
@@ -40,14 +31,14 @@ variable "kind" {
 }
 
 variable "consistency_policy" {
-    type = string
+    type = object({
+        consistency_level = string
+        max_interval_in_seconds = number
+        max_staleness_prefix = number
+    })
     description = "Specifies a consistency_policy resource, used to define the consistency policy for this CosmosDB account"
 }
-
-variable "geo_location" {
-    type = string
-    description = "Specifies a geo_location resource, used to define where data should be replicated with the failover_priority 0 specifying the primary location"
-}
+  
 
 variable "ip_range_filter" {
     type = string
@@ -84,11 +75,6 @@ variable "key_vault_key_id" {
     description = "A versionless Key Vault Key ID for CMK encryption"
 }
 
-variable "virtual_network_rule" {
-    type = string
-    description = "Specifies a virtual_network_rules resource, used to define which subnets are allowed to access this CosmosDB account"
-}
-
 variable "enable_multiple_write_locations" {
     type = string
     description = "Enable multiple write locations for this Cosmos DB account"
@@ -110,28 +96,13 @@ variable "network_acl_bypass_for_azure_services" {
 }
 
 variable "network_acl_bypass_ids" {
-    type = string
+    type = list(string)
     description = "The list of resource Ids for Network Acl Bypass for this Cosmos DB account"
 }
 
 variable "local_authentication_disabled" {
     type = string
     description = "Disable local authentication and ensure only MSI and AAD can be used exclusively for authentication"
-}
-
-variable "consistency_level" {
-    type = string
-    description = "The Consistency Level to use for this CosmosDB Account"
-}
-
-variable "max_interval_in_seconds" {
-    type = string
-    description = "When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated"
-}
-
-variable "max_staleness_prefix" {
-    type = string
-    description = "When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated"
 }
 
 variable "geo_location" {
@@ -211,4 +182,21 @@ variable "restore" {
         }))
     })
     description = "Specifies a restore resource, used to define the restore for this CosmosDB account"
+}
+
+variable "tags" {
+    type = map(string)
+    description = "A mapping of tags to assign to the resource"
+}
+  
+variable "naming_convention_info"   {
+    type = object({
+        name         = string
+        project_code = string
+        env          = string
+        zone         = string
+        agency_code  = string
+        tier         = string
+    })
+    description = "Naming convention object"
 }
